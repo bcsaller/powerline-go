@@ -27,6 +27,7 @@ func segmentVirtualEnv(p *powerline) {
 			Foreground: p.theme.VirtualEnvFg,
 			Background: p.theme.VirtualEnvBg,
 		})
+        return
 	}
 	envName := path.Base(env)
 	p.appendSegment("venv", pwl.Segment{
