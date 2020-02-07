@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	pwl "github.com/justjanne/powerline-go/powerline"
 	"io/ioutil"
 	"os"
 	"path"
@@ -10,6 +9,8 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+
+	pwl "github.com/justjanne/powerline-go/powerline"
 
 	"gopkg.in/yaml.v2"
 )
@@ -95,6 +96,12 @@ func segmentKube(p *powerline) {
 
 	if arnMatches := arnRe.FindStringSubmatch(cluster); arnMatches != nil && *p.args.ShortenEKSNames {
 		cluster = arnMatches[1]
+	} else {
+		const emailLikeString string = `^[-\.\w]+@([-\w]+)`
+		emailLikeRe := regexp.MustCompile(emailLikeString)
+		if emailMatches := emailLikeRe.FindStringSubmatch(cluster); emailMatches != nil && *p.args.ShortenEKSNames {
+			cluster = emailMatches[1]
+		}
 	}
 
 	// Only draw the icon once
