@@ -94,9 +94,14 @@ func segmentKube(p *powerline) {
 	const arnRegexString string = "^arn:aws:eks:[[:alnum:]-]+:[[:digit:]]+:cluster/(.*)$"
 	arnRe := regexp.MustCompile(arnRegexString)
 
+    const gkeRegexString string = "^gke_([^_]+)_([^_]+)_(.*)$"
+    gkeRe := regexp.MustCompile(gkeRegexString)
+
 	if arnMatches := arnRe.FindStringSubmatch(cluster); arnMatches != nil && *p.args.ShortenEKSNames {
 		cluster = arnMatches[1]
-	} else {
+    } else if gkeMatches := gkeRe.FindStringSubmatch(cluster); gkeMatches != nil && *p.args.ShortenEKSNames {
+        cluster = fmt.Sprintf("%s:%s", gkeMatches[1], gkeMatches[3])
+    } else {
 		const emailLikeString string = `^[-\.\w]+@([-\w]+)`
 		emailLikeRe := regexp.MustCompile(emailLikeString)
 		if emailMatches := emailLikeRe.FindStringSubmatch(cluster); emailMatches != nil && *p.args.ShortenEKSNames {
